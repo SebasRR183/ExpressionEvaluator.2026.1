@@ -23,7 +23,7 @@ public class Evaluator
             }
             else if (IsOperator(item))
             {
-                if (stack.Count == 0)
+                if (stack.Count == 0 || item == '(')
                 {
                     stack.Push(item);
                 }
@@ -31,12 +31,14 @@ public class Evaluator
                 {
                     if (item == ')')
                     {
-                        while (stack.Peek() != '(') postFix += stack.Pop() + " ";
-                        stack.Pop();
+                        while (stack.Count > 0 && stack.Peek() != '(') postFix += stack.Pop() + " ";
+                        if (stack.Count > 0) stack.Pop();
                     }
                     else
                     {
-                        if (item != '(' && PriorityInfix(item) <= PriorityStack(stack.Peek()))
+                        // EL ERROR ESTABA AQUÍ: Se debe usar WHILE para limpiar la pila 
+                        // y validar que no esté vacía ni sea un '(' antes de pedir la prioridad.
+                        while (stack.Count > 0 && stack.Peek() != '(' && PriorityStack(stack.Peek()) >= PriorityInfix(item))
                         {
                             postFix += stack.Pop() + " ";
                         }
